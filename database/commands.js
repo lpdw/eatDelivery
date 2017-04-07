@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Commands', {
-       id: {
+       id_command: {
           type: DataTypes.STRING,
        },
        address: {

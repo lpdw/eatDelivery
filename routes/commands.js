@@ -1,9 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var APIError = require('../lib/error');
+const commandsService = require('../services/commandsService');
 
 router.post('/',(req, res) => {
- return SongService.create(req.body)
+ return commandsService.create(req.body)
      .then(command => {
        if (req.accepts('application/json')) {
          return res.status(201).send(command);
@@ -16,7 +17,7 @@ router.post('/',(req, res) => {
 });
 
 router.delete('/:id', (req, res) => {
-   commandService.delete(req.params)
+   commandsService.delete(req.params)
        .then(command => {
            res.status(204).send();
        })
@@ -27,7 +28,7 @@ router.get('/:id', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
-  commandService.findById(req.params.id)
+  commandsService.findById(req.params.id)
       .then(command => {
        if (!command) {
           return next(new APIError(404, `id ${req.params.id} not found`));
