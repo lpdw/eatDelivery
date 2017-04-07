@@ -1,0 +1,1 @@
+curl -H "Content-Type: application/json" -d '{"id_command":"ER78LKHD56FGH20"}' http://localhost:3000/commands

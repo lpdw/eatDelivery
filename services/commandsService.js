@@ -25,3 +25,11 @@ exports.delete = (query = {}) => {
 exports.findById = (id_command) => {
  return db.Commands.findById(id_command);
 };
+
+exports.findByIdOverrided = (query = {}) => {
+  return db.Commands.find({
+      where: {
+        id_command : query.id_command
+      }
+  });
+}

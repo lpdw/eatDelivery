@@ -28,7 +28,7 @@ router.get('/:id_command', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
-  commandsService.findByIdOverrided(req.params.id_command)
+  commandsService.findByIdOverrided(req.params.id)
       .then(command => {
        if (!command) {
           return next(new APIError(404, `id ${req.params.id_command} not found`));
