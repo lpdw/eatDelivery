@@ -15,13 +15,13 @@ exports.create = (command) => {
 exports.delete = (query = {}) => {
   return db.Commands.destroy({
        where: {
-         id : query.id
+         id_command : query.id_command
        }
 
    });
 };
 
 //////
-exports.findById = (id) => {
- return db.Commands.findById(id);
+exports.findById = (id_command) => {
+ return db.Commands.findById(id_command);
 };
