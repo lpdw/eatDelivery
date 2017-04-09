@@ -4,6 +4,9 @@ var APIError = require('../lib/error');
 const commandsService = require('../services/commandsService');
 
 router.post('/',(req, res) => {
+  if (!req.accepts('application/json')) {
+    return next(new APIError(406, 'Not valid type for asked resource'));
+   }
  return commandsService.create(req.body)
      .then(command => {
        if (req.accepts('application/json')) {
@@ -17,9 +20,18 @@ router.post('/',(req, res) => {
 });
 
 router.delete('/:id_command', (req, res) => {
+  if (!req.accepts('application/json')) {
+    return next(new APIError(406, 'Not valid type for asked resource'));
+   }
    commandsService.delete(req.params)
        .then(command => {
+         if (!command) {
+            return next(new APIError(404, `id ${req.params.id_command} not found`));
+         }
            res.status(204).send();
+       })
+       .catch(err => {
+          res.status(500).send(err);
        })
    ;
 });
@@ -37,8 +49,10 @@ router.get('/:id_command', (req, res, next) => {
          return res.status(201).send(command);
        }
       })
-      .catch(next)
-      ;
+      .catch(err => {
+         res.status(500).send(err);
+      })
+  ;
 });
 
 module.exports = router;
