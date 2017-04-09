@@ -8,6 +8,7 @@ router.post('/',(req, res) => {
   if (!req.accepts('application/json')) {
     return next(new APIError(406, 'Not valid type for asked resource'));
    }
+   //TODO generate command_id
  return commandsService.create(req.body)
      .then(command => {
        if (req.accepts('application/json')) {
@@ -58,5 +59,5 @@ router.get('/:id_command', (req, res, next) => {
       })
   ;
 });
-
+//TODO Another route to set command status ?
 module.exports = router;
