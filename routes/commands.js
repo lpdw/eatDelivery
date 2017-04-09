@@ -1,3 +1,4 @@
+var Sequelize = require('sequelize');
 var express = require('express');
 var router = express.Router();
 var APIError = require('../lib/error');
@@ -13,7 +14,10 @@ router.post('/',(req, res) => {
          return res.status(201).send(command);
        }
      })
-     .catch(err => {
+     .catch(Sequelize.ValidationError, err => {
+              res.status(400).send(err);   // responds with validation errors
+      })
+      .catch(err => {
         res.status(500).send(err);
      })
   ;
@@ -46,7 +50,7 @@ router.get('/:id_command', (req, res, next) => {
           return next(new APIError(404, `id ${req.params.id_command} not found`));
        }
        if (req.accepts('application/json')) {
-         return res.status(201).send(command);
+         return res.status(200).send(command);
        }
       })
       .catch(err => {
