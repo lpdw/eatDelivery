@@ -14,8 +14,8 @@ exports.create = (command) => {
 exports.updateByID = (id, command) => {
   return db.Commands.update(command.dataValues, { where: { id: id }, returning: true});
 };
-exports.updateByDeliveryID = (command) => {
-  return db.Commands.update(command, { where: { delivery_id: command.delivery_id }, returning: true});
+exports.updateByDeliveryID = (id_delivery,commandUpdate) => {
+  return db.Commands.update(commandUpdate.dataValues, { where: { id_delivery: id_delivery }, returning: true});
 };
 exports.find = () => {
   return db.Commands.findAll();
@@ -30,14 +30,14 @@ exports.delete = (query) => {
 
 };
 //////
-exports.findById = (id_command) => {
- return db.Commands.findById(id_command);
+exports.findById = (id_delivery) => {
+ return db.Commands.findById(id_delivery);
 };
 
 exports.findByIdOverrided = (query = {}) => {
   return db.Commands.find({
       where: {
-        id_command : query.id_command
+        id_delivery : query
       }
   });
 }

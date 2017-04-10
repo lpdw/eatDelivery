@@ -81,7 +81,8 @@ router.get('/', (req, res, next) => {
        })
 })
 
-router.get('/:id_command', (req, res, next) => {
+//GET command by the id_delivery
+router.get('/:id_delivery', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
@@ -100,55 +101,60 @@ router.get('/:id_command', (req, res, next) => {
       })
   ;
 });
-// router.put('/',(req, res, next) => {
-//   if (!req.accepts('application/json')) {
-//     return next(new APIError(406, 'Not valid type for asked resource'));
-//    }
-//    var update = req.body;
-//    commandsService.findByIdOverrided(update.delivery_id)
-//     .then(command => {
-//       if (update.delivery_progress){
-//         command.delivery_progress = update.delivery_progress;
-//         command.progress_update_date = new Date();
-//       }
-//       if(update.delivered){
-//         command.delivered = update.delivered;
-//       }
-//       commandsService.updateByDeliveryID(command.delivery_id)
-//         .then(id => {
-//           if(command.delivered){
-//             var postData = querystring.stringify({
-//                 'tracking' : command.delivery_id,
-//                 'delivered': command.delivered
-//               });
-//             var options = {
-//               hostname: 'bio-society.herokuapp.com',
-//               port: 80,
-//               path: '/notify/colis',
-//               method: 'POST',
-//               headers: {
-//                 'Content-Type': 'application/json',
-//                 'Content-Length': Buffer.byteLength(postData)
-//               }
-//             };
-//             var req = http.request(options, (res) => {
-//               console.log(`STATUS: ${res.statusCode}`);
-//               console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-//               res.setEncoding('utf8');
-//               res.on('data', (chunk) => {
-//                 console.log(`BODY: ${chunk}`);
-//               });
-//               res.on('end', () => {
-//                 console.log('No more data in response.');
-//               });
-//             });
-//             req.write(postData);
-//             req.end();
-//           }
-//         })
-//     })
-//     .catch(err => {
-//       res.status(500).json(err);
-//     })
-// })
+ router.put('/:id_delivery',(req, res, next) => {
+  if (!req.accepts('application/json')) {
+     return next(new APIError(406, 'Not valid type for asked resource'));
+    }
+    var update = req.params;
+    var updateBody = req.body;
+    console.log(updateBody);
+    return commandsService.findByIdOverrided(update.id_delivery)
+     .then(command => {
+       if(updateBody.delivery_progress){
+         command.dataValues.delivery_progress = updateBody.delivery_progress;
+           if(updateBody.progress_update_date)
+           {
+             command.dataValues.progress_update_date = updateBody.progress_update_date != null ? new Date() : updateBody.progress_update_date;
+           } if(updateBody.delivered){
+             command.dataValues.delivered = updateBody.delivered;
+           }
+       }
+
+       commandsService.updateByDeliveryID(update.id_delivery,command)
+         .then(command => {
+           if(command.delivered == true){
+             var postData = querystring.stringify({
+                 'tracking' : command.id_delivery,
+                 'delivered': command.delivered
+               });
+             var options = {
+               hostname: 'bio-society.herokuapp.com',
+               port: 80,
+               path: '/notify/colis',
+               method: 'POST',
+               headers: {
+                 'Content-Type': 'application/json',
+                 'Content-Length': Buffer.byteLength(postData)
+               }
+             };
+             var req = http.request(options, (res) => {
+               console.log(`STATUS: ${res.statusCode}`);
+               console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+               res.setEncoding('utf8');
+               res.on('data', (chunk) => {
+                 console.log(`BODY: ${chunk}`);
+               });
+               res.on('end', () => {
+                 console.log('No more data in response.');
+               });
+             });
+             req.write(postData);
+             req.end();
+           }
+         })
+     })
+     .catch(err => {
+       res.status(500).json(err);
+     })
+ });
 module.exports = router;
