@@ -38,7 +38,7 @@ router.post('/',(req, res, next) => {
 
       })
      .catch(Sequelize.ValidationError, err => {
-        res.status(400).json(err.errors);   // responds with validation errors
+        res.status(400).json(err.errors[0]);   // responds with validation errors
       })
       .catch(err => {
         res.status(500).json(err);
