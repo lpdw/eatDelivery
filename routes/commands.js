@@ -150,8 +150,8 @@ router.get('/:id_delivery', (req, res, next) => {
              });
              req.write(postData);
              req.end();
-             return res.status(204).json();
            }
+           return res.status(204).json();
          })
      })
      .catch(err => {
