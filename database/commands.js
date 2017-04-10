@@ -1,7 +1,7 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define('Commands', {
-       id_command: {
+       id_delivery: {
           type: DataTypes.STRING,
        },
        address: {
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
            validate: {notEmpty: {msg: "-> Missing address"}},
            allowNull: false
        },
-       name: {
+       firstname: {
            type: DataTypes.STRING,
            validate: {notEmpty: {msg: "-> Missing name"}},
            allowNull: false

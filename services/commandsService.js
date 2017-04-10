@@ -11,6 +11,10 @@ exports.create = (command) => {
           return model.save();
       });
 };
+exports.update = (command) => {
+  console.log(command);
+  return db.Commands.update(command,{where: {command.id}, returning: true});
+};
 
 exports.find = () => {
   return db.Commands.findAll();
