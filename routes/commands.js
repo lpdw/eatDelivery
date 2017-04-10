@@ -10,22 +10,32 @@ router.post('/',(req, res, next) => {
    }
  commandsService.create(req.body)
      .then(command => {
+       console.log("after then");
       var today = new Date();
-      var updateDate = new Date();
-      var command_id = "FR";
+      var updateDate = today.setDate(today.getDate() + 6);
+      var id = "FR";
       // console.log("toto");
       var rndNb = Math.random().toString(36).substring(2,10);
-      command_id += rndNb;
-
-      command.command_id = command_id;
-      // console.log(command_id);
-      command.delivery_progress = "Commande reçu";
+      id += rndNb;
+      //console.log(command);
+      command.id_command = id;
       command.progress_update_date = today;
-      command.delivery_date = updateDate.setDate(today + 6);
-      return res.status(201).json(command);
-     })
+      command.delivery_progress = "Command received";
+      command.delivery_date = updateDate;
+      command.update(command)
+        .then(command => {
+          return res.status(201).json(command);
+        } )
+        .catch(err => {
+          res.status(500).json(err);
+        })
+      //console.log(command);
+      // commandsService.update(command)
+      //     .then(command => {return res.status(201).json(command);} )
+      //     .catch(err => { res.status(500).json(err); })
+
+      })
      .catch(Sequelize.ValidationError, err => {
-       console.log("Sequelize error");
         res.status(400).json(err);   // responds with validation errors
       })
       .catch(err => {

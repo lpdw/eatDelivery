@@ -21,19 +21,22 @@ module.exports = (sequelize, DataTypes) => {
           vaidate: {notEmpty: {msg: "-> Missing phone number"}}
        },
        delivery_date: {
-           type: DataTypes.DATE,
+           type: DataTypes.DATE
        },
        delivery_progress: {
-           type: DataTypes.STRING,
+           type: DataTypes.STRING
        },
        progress_update_date: {
-           type: DataTypes.DATE,
+           type: DataTypes.DATE
+       },
+       delivered:{
+         type: DataTypes.BOOLEAN
        },
        error: {
-           type: DataTypes.BOOLEAN,
+           type: DataTypes.BOOLEAN
        },
        error_descripion: {
-           type: DataTypes.STRING,
+           type: DataTypes.STRING
        },
    });
 };

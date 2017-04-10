@@ -8,8 +8,17 @@ exports.create = (command) => {
           if (err) {
               return Promise.reject(err);
           }
+          console.log("Yo");
           return model.save();
       });
+};
+exports.update = (command) => {
+  console.log('before find');
+  var model = db.Commands.findById(command.id);
+  return model.update()
+  console.log("after find");
+  //console.log(model);
+  //return model.update(command);
 };
 
 exports.delete = (query = {}) => {
@@ -20,7 +29,6 @@ exports.delete = (query = {}) => {
 
    });
 };
-
 //////
 exports.findById = (id_command) => {
  return db.Commands.findById(id_command);
