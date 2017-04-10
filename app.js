@@ -26,6 +26,7 @@ app.use('/commands', commands);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
+  console.log("404");
   err.status = 404;
   next(err);
 });
@@ -38,7 +39,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.send(err);
+  res.json(err);
 });
 
 module.exports = app;
