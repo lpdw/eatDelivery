@@ -5,15 +5,22 @@ var APIError = require('../lib/error');
 const commandsService = require('../services/commandsService');
 
 router.post('/',(req, res) => {
+     console.log("hello");
   if (!req.accepts('application/json')) {
     return next(new APIError(406, 'Not valid type for asked resource'));
    }
-   //TODO generate command_id
- return commandsService.create(req.body)
+ commandsService.create(req.body)
      .then(command => {
-       if (req.accepts('application/json')) {
-         return res.status(201).send(command);
-       }
+      var today = new Date();
+      var updateDate = new Date();
+      var command_id = "FR";
+      command_id.append(Math.random().toString(36).substring(7));
+      console.log(command_id);
+      command.delivery_progress = "Commande reçu";
+      command.progress_update_date = today;
+      command.delivery_date = updateDate.setDate(today + 6);
+
+      return res.status(201).send(command);
      })
      .catch(Sequelize.ValidationError, err => {
               res.status(400).send(err);   // responds with validation errors
