@@ -26,7 +26,6 @@ app.use('/commands', commands);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
-  console.log("404");
   err.status = 404;
   next(err);
 });
