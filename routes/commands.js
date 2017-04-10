@@ -13,20 +13,19 @@ router.post('/',(req, res, next) => {
 
       var today = new Date();
       var updateDate = today.setDate(today.getDate() + 6);
-      var id = "FR";
+      var delivery_id = "FR";
       // console.log("toto");
       var rndNb = Math.random().toString(36).substring(2,10);
-      id += rndNb;
+      delivery_id += rndNb;
       //console.log(command);
-      command.id_delivery = id;
+      command.id_delivery = delivery_id;
       command.progress_update_date = today;
       command.delivery_progress = "Command received";
       command.delivery_date = updateDate;
       command.delivered = false;
-      commandsService.update(command)
+      commandsService.updateByID(command.id, command)
         .then(new_command => {
-          //console.log(new_command)
-          return res.status(201).json(new_command.id_delivery);
+            return res.status(201).json(delivery_id);
         } )
         .catch(err => {
           res.status(500).json(err);
@@ -46,11 +45,11 @@ router.post('/',(req, res, next) => {
   ;
 });
 
-router.delete('/:id_command', (req, res) => {
+router.delete('/:id_delivery', (req, res) => {
   if (!req.accepts('application/json')) {
     return next(new APIError(406, 'Not valid type for asked resource'));
    }
-   commandsService.delete(req.params)
+   commandsService.delete(req.params.id_delivery)
        .then(command => {
          if (!command) {
             return next(new APIError(404, `id ${req.params.id_command} not found`));

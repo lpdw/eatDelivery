@@ -11,11 +11,9 @@ exports.create = (command) => {
           return model.save();
       });
 };
-exports.update = (command) => {
-  console.log(command);
-  return db.Commands.update(command,{where: {command.id}, returning: true});
+exports.updateByID = (id, command) => {
+  return db.Commands.update(command.dataValues, { where: { id: id }, returning: true});
 };
-
 exports.find = () => {
   return db.Commands.findAll();
 };
@@ -23,7 +21,7 @@ exports.find = () => {
 exports.delete = (query = {}) => {
   return db.Commands.destroy({
        where: {
-         id_command : query.id_command
+         id_delivery : query.id_delivery
        }
 
    });
