@@ -14,6 +14,9 @@ exports.create = (command) => {
 exports.updateByID = (id, command) => {
   return db.Commands.update(command.dataValues, { where: { id: id }, returning: true});
 };
+exports.updateByDeliveryID = (command) => {
+  return db.Commands.update(command, { where: { delivery_id: command.delivery_id }, returning: true});
+};
 exports.find = () => {
   return db.Commands.findAll();
 };

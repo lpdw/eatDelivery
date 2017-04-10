@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const APIError = require('../lib/error');
 const commandsService = require('../services/commandsService');
+//const http = require("http");
 
 router.post('/',(req, res, next) => {
   if (!req.accepts('application/json')) {
@@ -45,11 +46,11 @@ router.post('/',(req, res, next) => {
   ;
 });
 
-router.delete('/:id_delivery', (req, res) => {
+router.delete('/:id_command', (req, res) => {
   if (!req.accepts('application/json')) {
     return next(new APIError(406, 'Not valid type for asked resource'));
    }
-   commandsService.delete(req.params.id_delivery)
+   commandsService.delete(req.params.id_command)
        .then(command => {
          if (!command) {
             return next(new APIError(404, `id ${req.params.id_command} not found`));
@@ -80,7 +81,6 @@ router.get('/:id_command', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
-  console.log(req.params.id_command);
   commandsService.findByIdOverrided(req.params.id_command)
       .then(command => {
        if (!command) {
@@ -91,9 +91,59 @@ router.get('/:id_command', (req, res, next) => {
        }
       })
       .catch(err => {
-         res.status(500).send(err);
+         res.status(500).json(err);
       })
   ;
 });
-//TODO Another route to set command status ?
+// router.put('/',(req, res, next) => {
+//   if (!req.accepts('application/json')) {
+//     return next(new APIError(406, 'Not valid type for asked resource'));
+//    }
+//    var update = req.body;
+//    commandsService.findByIdOverrided(update.delivery_id)
+//     .then(command => {
+//       if (update.delivery_progress){
+//         command.delivery_progress = update.delivery_progress;
+//         command.progress_update_date = new Date();
+//       }
+//       if(update.delivered){
+//         command.delivered = update.delivered;
+//       }
+//       commandsService.updateByDeliveryID(command.delivery_id)
+//         .then(id => {
+//           if(command.delivered){
+//             var postData = querystring.stringify({
+//                 'tracking' : command.delivery_id,
+//                 'delivered': command.delivered
+//               });
+//             var options = {
+//               hostname: 'bio-society.herokuapp.com',
+//               port: 80,
+//               path: '/notify/colis',
+//               method: 'POST',
+//               headers: {
+//                 'Content-Type': 'application/json',
+//                 'Content-Length': Buffer.byteLength(postData)
+//               }
+//             };
+//             var req = http.request(options, (res) => {
+//               console.log(`STATUS: ${res.statusCode}`);
+//               console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+//               res.setEncoding('utf8');
+//               res.on('data', (chunk) => {
+//                 console.log(`BODY: ${chunk}`);
+//               });
+//               res.on('end', () => {
+//                 console.log('No more data in response.');
+//               });
+//             });
+//             req.write(postData);
+//             req.end();
+//           }
+//         })
+//     })
+//     .catch(err => {
+//       res.status(500).json(err);
+//     })
+// })
 module.exports = router;
