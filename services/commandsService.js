@@ -12,6 +12,10 @@ exports.create = (command) => {
       });
 };
 
+exports.find = () => {
+  return db.Commands.findAll();
+};
+
 exports.delete = (query = {}) => {
   return db.Commands.destroy({
        where: {
@@ -20,7 +24,6 @@ exports.delete = (query = {}) => {
 
    });
 };
-
 //////
 exports.findById = (id_command) => {
  return db.Commands.findById(id_command);

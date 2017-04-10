@@ -1,7 +1,7 @@
-var Sequelize = require('sequelize');
-var express = require('express');
-var router = express.Router();
-var APIError = require('../lib/error');
+const Sequelize = require('sequelize');
+const express = require('express');
+const router = express.Router();
+const APIError = require('../lib/error');
 const commandsService = require('../services/commandsService');
 
 router.post('/',(req, res, next) => {
@@ -10,23 +10,36 @@ router.post('/',(req, res, next) => {
    }
  commandsService.create(req.body)
      .then(command => {
+
       var today = new Date();
-      var updateDate = new Date();
-      var command_id = "FR";
+      var updateDate = today.setDate(today.getDate() + 6);
+      var id = "FR";
       // console.log("toto");
       var rndNb = Math.random().toString(36).substring(2,10);
-      command_id += rndNb;
-
-      command.command_id = command_id;
-      // console.log(command_id);
-      command.delivery_progress = "Commande reçu";
+      id += rndNb;
+      //console.log(command);
+      command.id_command = id;
       command.progress_update_date = today;
-      command.delivery_date = updateDate.setDate(today + 6);
-      return res.status(201).json(command);
-     })
+      command.delivery_progress = "Command received";
+      command.delivery_date = updateDate;
+      command.delivered = false;
+      command.update(command)
+        .then(new_command => {
+          console.log(new_command)
+          return res.status(201).json(new_command);
+        } )
+        .catch(err => {
+          res.status(500).json(err);
+        })
+      //console.log(command);
+      // commandsService.update(command)
+      //     .then(command => {return res.status(201).json(command);} )
+      //     .catch(err => { res.status(500).json(err); })
+
+      })
      .catch(Sequelize.ValidationError, err => {
-       console.log("Sequelize error");
-        res.status(400).json(err);   // responds with validation errors
+       console.log("error sequelize");
+        res.status(400).json(err.errors[0].message);   // responds with validation errors
       })
       .catch(err => {
         console.log(err);
@@ -51,12 +64,29 @@ router.delete('/:id_command', (req, res) => {
        })
    ;
 });
-
+router.get('/', (req, res, next) => {
+  console.log("coucou");
+  return commandsService.find()
+        .then(commands => {
+              console.log("in then");
+             if (!commands) {
+                return next(new APIError(404, `commands not found`));
+             }
+             if (req.accepts('application/json')) {
+               return res.status(200).send(commands);
+             }
+           })
+       .catch(err => {
+         console.log(err);
+         return res.status(500).json(err);
+       })
+})
 router.get('/:id_command', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
-  commandsService.findByIdOverrided(req.params.id)
+  console.log(req.params.id_command);
+  commandsService.findByIdOverrided(req.params.id_command)
       .then(command => {
        if (!command) {
           return next(new APIError(404, `id ${req.params.id_command} not found`));
