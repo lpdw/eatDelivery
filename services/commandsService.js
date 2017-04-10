@@ -13,8 +13,9 @@ exports.create = (command) => {
 };
 exports.update = (command) => {
   console.log(command);
-  return db.Commands.upsert(command);
+  return db.Commands.update(command,{where: {command.id}, returning: true});
 };
+
 exports.find = () => {
   return db.Commands.findAll();
 };
