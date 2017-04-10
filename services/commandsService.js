@@ -21,10 +21,10 @@ exports.find = () => {
 exports.delete = (query = {}) => {
   return db.Commands.destroy({
        where: {
-         id_delivery : query.id_delivery
+         query
        }
-
    });
+   console.log(query);
 };
 //////
 exports.findById = (id_command) => {

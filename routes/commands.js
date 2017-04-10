@@ -44,22 +44,28 @@ router.post('/',(req, res, next) => {
      })
   ;
 });
-
-router.delete('/:id_delivery', (req, res) => {
+/*if (!command) {
+   return next(new APIError(404, `id ${req.params.id_command} not found`));
+}
+  res.status(204).send();
+})
+.catch(err => {
+ res.status(500).send(err);
+})
+;*/
+router.delete('/:id', (req, res) => {
   if (!req.accepts('application/json')) {
     return next(new APIError(406, 'Not valid type for asked resource'));
    }
-   commandsService.delete(req.params.id_delivery)
-       .then(command => {
-         if (!command) {
-            return next(new APIError(404, `id ${req.params.id_command} not found`));
-         }
-           res.status(204).send();
-       })
-       .catch(err => {
-          res.status(500).send(err);
-       })
-   ;
+   commandsService.delete({id: req.params.id})
+    .then(() => {
+         res.status(204).send();
+     })
+     .catch(err => {
+         res.status(404).send("coucou");
+         console.log("Coucou");
+     });
+
 });
 router.get('/', (req, res, next) => {
   return commandsService.find()
@@ -80,7 +86,7 @@ router.get('/:id_command', (req, res, next) => {
  if (!req.accepts('application/json')) {
    return next(new APIError(406, 'Not valid type for asked resource'));
   }
-  console.log(req.params.id_command);
+  //console.log(req.params.id_command);
   commandsService.findByIdOverrided(req.params.id_command)
       .then(command => {
        if (!command) {
