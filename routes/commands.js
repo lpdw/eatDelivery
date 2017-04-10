@@ -18,15 +18,15 @@ router.post('/',(req, res, next) => {
       var rndNb = Math.random().toString(36).substring(2,10);
       id += rndNb;
       //console.log(command);
-      command.id_command = id;
+      command.id_delivery = id;
       command.progress_update_date = today;
       command.delivery_progress = "Command received";
       command.delivery_date = updateDate;
       command.delivered = false;
-      command.update(command)
+      commandsService.update(command)
         .then(new_command => {
-          console.log(new_command)
-          return res.status(201).json(new_command);
+          //console.log(new_command)
+          return res.status(201).json(new_command.id_delivery);
         } )
         .catch(err => {
           res.status(500).json(err);
@@ -38,11 +38,9 @@ router.post('/',(req, res, next) => {
 
       })
      .catch(Sequelize.ValidationError, err => {
-       console.log("error sequelize");
         res.status(400).json(err.errors[0].message);   // responds with validation errors
       })
       .catch(err => {
-        console.log(err);
         res.status(500).json(err);
      })
   ;
@@ -65,7 +63,6 @@ router.delete('/:id_command', (req, res) => {
    ;
 });
 router.get('/', (req, res, next) => {
-  console.log("coucou");
   return commandsService.find()
         .then(commands => {
               console.log("in then");
@@ -77,7 +74,6 @@ router.get('/', (req, res, next) => {
              }
            })
        .catch(err => {
-         console.log(err);
          return res.status(500).json(err);
        })
 })
