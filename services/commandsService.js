@@ -19,7 +19,7 @@ exports.find = () => {
 exports.delete = (query = {}) => {
   return db.Commands.destroy({
        where: {
-         id_command : query.id_command
+         id_delivery : query.id_delivery
        }
 
    });
