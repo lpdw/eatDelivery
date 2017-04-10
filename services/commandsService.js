@@ -21,13 +21,13 @@ exports.find = () => {
   return db.Commands.findAll();
 };
 
-exports.delete = (query = {}) => {
+exports.delete = (query) => {
   return db.Commands.destroy({
        where: {
-         query
+         id_delivery: query.id_delivery
        }
    });
-   console.log(query);
+
 };
 //////
 exports.findById = (id_command) => {
