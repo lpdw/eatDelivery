@@ -123,9 +123,10 @@ router.get('/:id_delivery', (req, res, next) => {
        commandsService.updateByDeliveryID(update.id_delivery,command)
          .then(command => {
            if(command.delivered == true){
+
              var postData = querystring.stringify({
-                 'tracking' : "FRuxuoml58",
-                 'delivered': true
+                 'tracking' : command.id_delivery,
+                 'delivered': command.delivered
                });
 
         const httpTransport = require('http');
@@ -135,7 +136,7 @@ router.get('/:id_delivery', (req, res, next) => {
             port: '80',
             path: '/notify/colis/',
             method: 'POST',
-            headers: {"tracking":"FRuxuoml58","Content-Type":"application/json; charset=utf-8"}
+            headers: {"tracking":command.id_delivery,"Content-Type":"application/json; charset=utf-8"}
         };
         httpOptions.headers['User-Agent'] = 'node ' + process.version;
         const request = httpTransport.request(httpOptions, (res) => {
@@ -173,7 +174,9 @@ router.get('/:id_delivery', (req, res, next) => {
               });
 
                }
+               return res.status(204).json();
              })
+
          })
          .catch(err => {
            res.status(500).json(err);
