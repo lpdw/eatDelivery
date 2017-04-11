@@ -124,37 +124,59 @@ router.get('/:id_delivery', (req, res, next) => {
          .then(command => {
            if(command.delivered == true){
              var postData = querystring.stringify({
-                 'tracking' : command.id_delivery,
-                 'delivered': command.delivered
+                 'tracking' : "FRuxuoml58",
+                 'delivered': true
                });
-             var options = {
-               hostname: 'bio-society.herokuapp.com',
-               port: 80,
-               path: '/notify/colis',
-               method: 'POST',
-               headers: {
-                 'Content-Type': 'application/json',
-                 'Content-Length': Buffer.byteLength(postData)
+
+        const httpTransport = require('http');
+        const responseEncoding = 'utf8';
+        const httpOptions = {
+            hostname: 'bio-society.herokuapp.com',
+            port: '80',
+            path: '/notify/colis/',
+            method: 'POST',
+            headers: {"tracking":"FRuxuoml58","Content-Type":"application/json; charset=utf-8"}
+        };
+        httpOptions.headers['User-Agent'] = 'node ' + process.version;
+        const request = httpTransport.request(httpOptions, (res) => {
+            let responseBufs = [];
+            let responseStr = '';
+
+              res.on('data', (chunk) => {
+                  if (Buffer.isBuffer(chunk)) {
+                      responseBufs.push(chunk);
+                  }
+                  else {
+                      responseStr = responseStr + chunk;
+                  }
+              }).on('end', () => {
+                  responseStr = responseBufs.length > 0 ?
+                      Buffer.concat(responseBufs).toString(responseEncoding) : responseStr;
+
+                  callback(null, res.statusCode, res.headers, responseStr);
+              });
+
+                  })
+                  .setTimeout(0)
+                  .on('error', (error) => {
+                      callback(error);
+                  });
+                  console.log(postData);
+                  request.write(JSON.stringify(postData));
+                  request.end();
+
+              ((error, statusCode, headers, body) => {
+                  console.log('ERROR:', error);
+                  console.log('STATUS:', statusCode);
+                  console.log('HEADERS:', JSON.stringify(headers));
+                  console.log('BODY:', body);
+              });
+
                }
-             };
-             var req = http.request(options, (res) => {
-               console.log(`STATUS: ${res.statusCode}`);
-               console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-               res.setEncoding('utf8');
-               res.on('data', (chunk) => {
-                 console.log(`BODY: ${chunk}`);
-               });
-               res.on('end', () => {
-                 console.log('No more data in response.');
-               });
-             });
-             req.write(postData);
-             req.end();
-           }
+             })
          })
-     })
-     .catch(err => {
-       res.status(500).json(err);
-     })
- });
+         .catch(err => {
+           res.status(500).json(err);
+         })
+     });
 module.exports = router;
